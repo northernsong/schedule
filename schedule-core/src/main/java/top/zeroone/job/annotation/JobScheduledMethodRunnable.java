@@ -18,49 +18,65 @@ public class JobScheduledMethodRunnable extends ScheduledMethodRunnable {
     private final Lock lock;
     private final JobScheduledLock scheduledLock;
     private final String name;
+    private final RedisTimeLock timeLock;
 
     public JobScheduledMethodRunnable(final ScheduledMethodRunnable runnable, final RedisConnectionFactory factory, final JobScheduledLock scheduledLock) {
         super(runnable.getTarget(), runnable.getMethod());
         this.scheduledLock = scheduledLock;
-        this.name = StringUtils.isBlank(scheduledLock.id()) ? name(runnable.getTarget(), runnable.getMethod()) : scheduledLock.id();
-
+        this.name = name(runnable.getTarget(), runnable.getMethod(), scheduledLock.id());
         final RedisLockRegistry redisLockRegistry;
+        redisLockRegistry = new RedisLockRegistry(factory, this.name);
+        this.lock = redisLockRegistry.obtain(":lock");
+
         if (scheduledLock.lockSecond() > 0) {
-            redisLockRegistry = new RedisLockRegistry(factory, this.name, scheduledLock.lockSecond());
+            this.timeLock = new RedisTimeLock(factory, this.name, scheduledLock.lockSecond());
         } else {
-            redisLockRegistry = new RedisLockRegistry(factory, this.name);
+            this.timeLock = null;
         }
-        this.lock = redisLockRegistry.obtain("l");
     }
 
-    public String name(final Object object, final Method method) {
-        return object.getClass().getName() + method.getName();
+    public String name(final Object object, final Method method, final String id) {
+        final String key = StringUtils.isBlank(id) ? (object.getClass().getName() + method.getName()) : id;
+        return "redis:lock:" + key;
     }
 
 
     @Override
     public void run() {
         if (this.scheduledLock.ifLockDoNot()) {
+            if (this.timeLock != null) {
+                // 有些任务,短时间内不必重复执行.因没有等待执行,所以没有显式的解锁
+                if (!this.timeLock.tryLock()) {
+                    log.debug("任务{}, time tryLock return false, 停止执行", this.name);
+                    return;
+                }
+            }
+
             if (this.lock.tryLock()) {
                 try {
                     invokeMethod();
                 } finally {
-                    if (this.scheduledLock.lockSecond() == 0) {
-                        this.lock.unlock();
-                    }
+                    this.lock.unlock();
                 }
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug("任务{}, tryLock return false, 停止执行", this.name);
                 }
             }
+        } else {
+            invokeMethod();
         }
     }
 
     private void invokeMethod() {
         try {
             ReflectionUtils.makeAccessible(getMethod());
-            this.getMethod().invoke(getTarget());
+            final Object[] objects = new Object[this.getMethod().getParameterCount()];
+            for (int i = 0; i < objects.length; i++) {
+                objects[i] = null;
+            }
+
+            this.getMethod().invoke(getTarget(), objects);
         } catch (final InvocationTargetException ex) {
             ReflectionUtils.rethrowRuntimeException(ex.getTargetException());
         } catch (final IllegalAccessException ex) {

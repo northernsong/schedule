@@ -18,10 +18,10 @@ public class SpringBootTestApplication {
 
     @Scheduled(cron = "0/5 * * * * ?")
     @JobScheduledLock(lockSecond = 2)
-    public void cron() throws InterruptedException {
+    public void cron(String i) throws InterruptedException {
         System.out.println();
         System.out.println("************");
-        System.out.println("Schedule Test cron start");
+        System.out.println("Schedule Test cron start" + i);
         System.out.println(LocalDateTime.now());
         Thread.sleep(2000);
         System.out.println("Schedule Test cron end");

@@ -19,14 +19,6 @@ public @interface JobScheduledLock {
      */
     long lockSecond() default 0;
 
-    // /**
-    //  * 等待锁的时间
-    //  *
-    //  * @return
-    //  */
-    // long tryLockWaitTime() default 0;
-
-
     /**
      * 如果其他点执行了,就不再继续执行了
      * <p>
