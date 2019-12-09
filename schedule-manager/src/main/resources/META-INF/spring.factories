@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  top.zeroone.job.manager.JobManagerSchedulingConfigurer
+

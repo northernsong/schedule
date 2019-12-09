@@ -18,6 +18,7 @@
         <module>admin</module>
         <module>schedule-core</module>
         <module>example</module>
+        <module>schedule-manager</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -1,4 +1,4 @@
-package top.zeroone.job.annotation;
+package top.zeroone.job.manager;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -11,13 +11,11 @@ import org.springframework.scheduling.config.TaskManagementConfigUtils;
 
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-public class JobSchedulingConfiguration {
+public class JobManagerSchedulingConfiguration {
 
     @Bean(name = TaskManagementConfigUtils.SCHEDULED_ANNOTATION_PROCESSOR_BEAN_NAME)
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public ScheduledAnnotationBeanPostProcessor scheduledAnnotationProcessor(final RedisConnectionFactory factory, @Value("${schedule.job.corePoolSize:3}") final Integer corePoolSize) {
-
-
-        return new JobScheduledAnnotationBeanPostProcessor(factory, corePoolSize);
+        return new JobManagerScheduledAnnotationBeanPostProcessor(factory, corePoolSize);
     }
 }

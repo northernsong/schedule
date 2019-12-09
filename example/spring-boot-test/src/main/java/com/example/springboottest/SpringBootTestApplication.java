@@ -18,7 +18,7 @@ public class SpringBootTestApplication {
 
     @Scheduled(cron = "0/5 * * * * ?")
     @JobScheduledLock(lockSecond = 2)
-    public void cron(String i) throws InterruptedException {
+    public void cron(final String i) throws InterruptedException {
         System.out.println();
         System.out.println("************");
         System.out.println("Schedule Test cron start" + i);
@@ -28,4 +28,31 @@ public class SpringBootTestApplication {
         System.out.println("************");
         System.out.println();
     }
+
+
+    @Scheduled(fixedRate = 10000)
+    @JobScheduledLock(lockSecond = 2, id = "fixedTest")
+    public void fixedTest() throws InterruptedException {
+        System.out.println();
+        System.out.println("************");
+        System.out.println("Schedule Test fixedTest start");
+        System.out.println(LocalDateTime.now());
+        System.out.println("Schedule Test fixedTest end");
+        System.out.println("************");
+        System.out.println();
+    }
+
+
+    @Scheduled(fixedDelay = 13000)
+    @JobScheduledLock(lockSecond = 2, id = "fixedDelay")
+    public void fixedDelay() throws InterruptedException {
+        System.out.println();
+        System.out.println("************");
+        System.out.println("Schedule Test fixedDelay start");
+        System.out.println(LocalDateTime.now());
+        System.out.println("Schedule Test fixedDelay end");
+        System.out.println("************");
+        System.out.println();
+    }
+
 }
