@@ -43,7 +43,6 @@ public class JobManagerSchedulingConfigurer implements SchedulingConfigurer {
 
     @ReadOperation
     public ScheduledTasksReport readTasks() {
-        Endpoint endpoint;
         final Map<TaskType, List<TaskDescription>> descriptionsByType = this.scheduledTaskHolders.stream()
                 .flatMap((holder) -> holder.getScheduledTasks().stream()).map(ScheduledTask::getTask)
                 .map(TaskDescription::of).filter(Objects::nonNull)

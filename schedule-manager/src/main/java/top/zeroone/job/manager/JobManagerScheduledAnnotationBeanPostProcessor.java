@@ -22,7 +22,6 @@ public class JobManagerScheduledAnnotationBeanPostProcessor extends JobScheduled
     @Override
     public void afterSingletonsInstantiated() {
         super.afterSingletonsInstantiated();
-        //getAllTask();
     }
 
     @Override

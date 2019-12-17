@@ -9,6 +9,9 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.scheduling.config.TaskManagementConfigUtils;
 
+/**
+ * @author songyang
+ */
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class JobManagerSchedulingConfiguration {
