@@ -2,6 +2,7 @@ package top.zeroone.job.annotation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.scheduling.support.ScheduledMethodRunnable;
@@ -68,7 +69,7 @@ public class JobScheduledMethodRunnable extends ScheduledMethodRunnable {
         }
     }
 
-    private void invokeMethod() {
+    protected void invokeMethod() {
         try {
             ReflectionUtils.makeAccessible(getMethod());
             final Object[] objects = new Object[this.getMethod().getParameterCount()];
@@ -82,5 +83,21 @@ public class JobScheduledMethodRunnable extends ScheduledMethodRunnable {
         } catch (final IllegalAccessException ex) {
             throw new UndeclaredThrowableException(ex);
         }
+    }
+
+    public Lock getLock() {
+        return lock;
+    }
+
+    public JobScheduledLock getScheduledLock() {
+        return scheduledLock;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public RedisTimeLock getTimeLock() {
+        return timeLock;
     }
 }

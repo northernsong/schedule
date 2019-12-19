@@ -19,6 +19,6 @@ public class JobManagerSchedulingConfiguration {
     @Bean(name = TaskManagementConfigUtils.SCHEDULED_ANNOTATION_PROCESSOR_BEAN_NAME)
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public ScheduledAnnotationBeanPostProcessor scheduledAnnotationProcessor(final RedisConnectionFactory factory, @Value("${schedule.job.corePoolSize:3}") final Integer corePoolSize) {
-        return new JobManagerScheduledAnnotationBeanPostProcessor(factory, corePoolSize);
+        return new JobManager(factory, corePoolSize, null);
     }
 }

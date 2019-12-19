@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 /**
  * @author songyang
  */
-@Configuration
-@Endpoint(id = "schedule-manager")
+// @Configuration
+// @Endpoint(id = "schedule-manager")
 public class JobManagerSchedulingConfigurer implements SchedulingConfigurer {
 
     private ScheduledTaskRegistrar registrar;

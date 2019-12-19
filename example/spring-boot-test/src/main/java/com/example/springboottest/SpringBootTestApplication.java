@@ -5,11 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.zeroone.job.annotation.EnableJobScheduling;
 import top.zeroone.job.annotation.JobScheduledLock;
+import top.zeroone.job.manager.EnableJobManagerScheduling;
 
 import java.time.LocalDateTime;
 
 @SpringBootApplication
-@EnableJobScheduling
+@EnableJobManagerScheduling
 public class SpringBootTestApplication {
 
     public static void main(final String[] args) {
