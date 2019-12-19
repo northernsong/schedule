@@ -1,7 +1,5 @@
 package top.zeroone.job.manager;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
@@ -10,11 +8,13 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.scheduling.config.ScheduledTaskHolder;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import org.springframework.scheduling.config.Task;
+import top.zeroone.job.manager.model.TaskDescription;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author songyang
@@ -56,14 +56,11 @@ public class TaskManager implements SchedulingConfigurer {
 
 
     @ReadOperation
-    public String readTasks() {
-
-        if (taskMap.isEmpty()){
+    public List<TaskDescription> readTasks() {
+        if (this.taskMap.isEmpty()) {
             initTaskMap();
         }
-
-        final SimplePropertyPreFilter simplePropertyPreFilter = new SimplePropertyPreFilter(Task.class, "runnable");
-        return JSONObject.toJSONString(this.taskMap, simplePropertyPreFilter);
+        return this.taskMap.values().stream().map(ScheduledTask::getTask).map(TaskDescription::of).collect(Collectors.toList());
     }
 
 
