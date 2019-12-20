@@ -1,7 +1,10 @@
 package com.example.springboottest;
 
+import com.netflix.discovery.EurekaClientConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.zeroone.job.annotation.EnableJobScheduling;
 import top.zeroone.job.annotation.JobScheduledLock;
@@ -13,9 +16,13 @@ import java.time.LocalDateTime;
 @EnableJobManagerScheduling
 public class SpringBootTestApplication {
 
+    @Autowired
+    private EurekaClientConfig eurekaClientConfig;
+
     public static void main(final String[] args) {
         SpringApplication.run(SpringBootTestApplication.class, args);
     }
+
 
     @Scheduled(cron = "0/5 * * * * ?")
     @JobScheduledLock(lockSecond = 2)
@@ -43,7 +50,6 @@ public class SpringBootTestApplication {
         System.out.println();
     }
 
-
     @Scheduled(fixedDelay = 13000)
     @JobScheduledLock(lockSecond = 2, id = "fixedDelay")
     public void fixedDelay() throws InterruptedException {
@@ -55,5 +61,4 @@ public class SpringBootTestApplication {
         System.out.println("************");
         System.out.println();
     }
-
 }
