@@ -3,15 +3,20 @@ package top.zeroone.job.manager;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
+import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.scheduling.support.ScheduledMethodRunnable;
 import top.zeroone.job.annotation.JobScheduledLock;
+import top.zeroone.job.manager.model.TaskDescription;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 public class JobManager extends ScheduledAnnotationBeanPostProcessor {
 
@@ -48,5 +53,22 @@ public class JobManager extends ScheduledAnnotationBeanPostProcessor {
             return runnable;
         }
         return new JobReportScheduledMethodRunnable(runnable, this.factory, scheduledLock, this.jobReporter);
+    }
+
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        super.afterSingletonsInstantiated();
+
+        final List<TaskDescription> list = getScheduledTasks().stream().map(ScheduledTask::getTask).map(TaskDescription::of).collect(Collectors.toList());
+        this.jobReporter.reportAllTask(list);
+    }
+
+    @Override
+    public void onApplicationEvent(final ContextRefreshedEvent event) {
+        super.onApplicationEvent(event);
+
+        final List<TaskDescription> list = getScheduledTasks().stream().map(ScheduledTask::getTask).map(TaskDescription::of).collect(Collectors.toList());
+        this.jobReporter.reportAllTask(list);
     }
 }

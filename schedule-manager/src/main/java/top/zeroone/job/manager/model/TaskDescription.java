@@ -62,25 +62,6 @@ public class TaskDescription {
         return description;
     }
 
-    // private static TaskDescription triggerTask(TriggerTask triggerTask){
-    //
-    //
-    //     final Trigger trigger = triggerTask.getTrigger();
-    //     if (trigger instanceof CronTrigger) {
-    //         return cron(triggerTask, (CronTrigger) trigger);
-    //     }
-    //     if (trigger instanceof PeriodicTrigger) {
-    //         final PeriodicTrigger periodicTrigger = (PeriodicTrigger) trigger;
-    //         if (periodicTrigger.isFixedRate()) {
-    //             return new JobManagerSchedulingConfigurer.FixedRateTaskDescription(triggerTask, periodicTrigger);
-    //         }
-    //         return new JobManagerSchedulingConfigurer.FixedDelayTaskDescription(triggerTask, periodicTrigger);
-    //     }
-    //     return new JobManagerSchedulingConfigurer.CustomTriggerTaskDescription(triggerTask);
-    //
-    //
-    // }
-
     public enum TaskType {
         CRON, CUSTOM_TRIGGER, FIXED_DELAY, FIXED_RATE
     }
