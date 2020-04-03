@@ -19,6 +19,13 @@ public class JobController {
 
 
     }
+
+    @PostMapping("task/stop")
+    public void stopTask(String taskId){
+
+    }
+
+
 }
 
 // 上报,执行日志
